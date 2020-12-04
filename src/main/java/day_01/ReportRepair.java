@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class ReportRepair {
 
-    private static final String INPUT_FILE = "day_01/input.txt";
+    private static final String INPUT_FILE = "input_01.txt";
 
     public static void main(String[] args) {
         new ReportRepair().repairReport();

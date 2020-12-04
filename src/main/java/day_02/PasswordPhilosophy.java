@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class PasswordPhilosophy {
 
-    private static final String INPUT_FILE = "day_02/input.txt";
+    private static final String INPUT_FILE = "input_02.txt";
 
     public static void main(String[] args) {
         new PasswordPhilosophy().countValidPasswords();
