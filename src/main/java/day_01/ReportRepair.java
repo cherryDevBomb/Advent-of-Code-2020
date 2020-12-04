@@ -19,13 +19,6 @@ public class ReportRepair {
         System.out.println("Product of 3 numbers that sum to 2020: " + getResultForThreeNumbers(numbers));
     }
 
-    private List<Integer> readInput() {
-        return InputReader.readInputFile(INPUT_FILE)
-                .stream()
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
-    }
-
     /***
      * Find two entries in a list that sum to 2020 and then multiply those two numbers together.
      *
@@ -50,5 +43,12 @@ public class ReportRepair {
                 .filter(nr1 -> numbers.stream().anyMatch(nr2 -> numbers.stream().anyMatch(nr3 -> (nr1 + nr2 + nr3 == 2020))))
                 .reduce((nr1, nr2) -> nr1 * nr2)
                 .get();
+    }
+
+    private List<Integer> readInput() {
+        return InputReader.readInputFile(INPUT_FILE)
+                .stream()
+                .map(Integer::valueOf)
+                .collect(Collectors.toList());
     }
 }
