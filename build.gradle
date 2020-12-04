@@ -9,3 +9,5 @@ repositories {
 
 dependencies {
 }
+
+gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS
