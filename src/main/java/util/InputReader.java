@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -20,5 +22,11 @@ public class InputReader {
             e.printStackTrace();
         }
         return lines;
+    }
+
+    public static List<String> readInputFileChunks(String filepath) {
+        return readInputFile(filepath)
+                .stream()
+                .collect(CustomCollectors.collectChunks(StringUtils::isBlank));
     }
 }
