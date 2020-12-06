@@ -12,7 +12,7 @@ public class PassportProcessing {
 
     private static final String INPUT_FILE = "input_04.txt";
 
-    private PassportField OPTIONAL_FIELD = PassportField.COUNTRY_ID;
+    private final PassportField OPTIONAL_FIELD = PassportField.COUNTRY_ID;
 
     public static void main(String[] args) {
         new PassportProcessing().countValidPassports();
@@ -21,13 +21,39 @@ public class PassportProcessing {
     private void countValidPassports() {
         List<Map<PassportField, String>> parsedPassports = readPassportData();
 
-        long valid = parsedPassports.stream()
+        List<Map<PassportField, String>> passportsWithAllRequiredFields = getValidPassports(parsedPassports);
+        List<Map<PassportField, String>> passportsWithValidData = getPassportsWithValidData(passportsWithAllRequiredFields);
+
+        System.out.println("Number of valid passports: " + passportsWithAllRequiredFields.size());
+        System.out.println("Number of passports containing only valid data: " + passportsWithValidData.size());
+    }
+
+    /**
+     * Given a list of passports, filter only those that contain all required fields
+     *
+     * @param passports initial list of passports
+     * @return passports hat contain all required fields
+     */
+    private List<Map<PassportField, String>> getValidPassports(List<Map<PassportField, String>> passports) {
+        return passports.stream()
                 .filter(passport -> Arrays.stream(PassportField.values())
                         .filter(field -> field != OPTIONAL_FIELD)
                         .allMatch(passport::containsKey))
-                .count();
+                .collect(Collectors.toList());
+    }
 
-        System.out.println("Number of valid passports: " + valid);
+    /**
+     * Given a list of passports, filter only those that contain valid data for all fields
+     *
+     * @param passports initial list of passports
+     * @return passports hat contain valid data for all fields
+     */
+    private List<Map<PassportField, String>> getPassportsWithValidData(List<Map<PassportField, String>> passports) {
+        return passports.stream()
+                .filter(passport -> passport.entrySet()
+                        .stream()
+                        .allMatch(PassportFieldValidator::isValidField))
+                .collect(Collectors.toList());
     }
 
     /**
