@@ -62,7 +62,7 @@ public class PassportProcessing {
      * @return a List of passports represented as Map<PassportField, String>
      */
     private List<Map<PassportField, String>> readPassportData() {
-        return InputReader.readInputFileChunks(INPUT_FILE)
+        return InputReader.readInputFileChunks(INPUT_FILE, " ")
                 .stream()
                 .map(passport -> passport.split(" "))
                 .map(fieldList -> Arrays.stream(fieldList)

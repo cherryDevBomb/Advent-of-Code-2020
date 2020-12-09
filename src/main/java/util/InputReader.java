@@ -24,9 +24,9 @@ public class InputReader {
         return lines;
     }
 
-    public static List<String> readInputFileChunks(String filepath) {
+    public static List<String> readInputFileChunks(String filepath, String unifier) {
         return readInputFile(filepath)
                 .stream()
-                .collect(CustomCollectors.collectChunks(StringUtils::isBlank));
+                .collect(CustomCollectors.collectChunks(StringUtils::isBlank, unifier));
     }
 }
