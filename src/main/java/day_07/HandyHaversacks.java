@@ -12,7 +12,7 @@ import util.InputReader;
 public class HandyHaversacks {
 
     private static final String INPUT_FILE = "input_07.txt";
-    
+
     private static final String SHINY_GOLD = "shiny gold";
 
     public static void main(String[] args) {
