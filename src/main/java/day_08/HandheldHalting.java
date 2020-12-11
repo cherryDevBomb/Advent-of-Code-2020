@@ -16,7 +16,7 @@ public class HandheldHalting {
 
     private void runBootCode() {
         List<Instruction> instructions = InputReader.readInputFile(INPUT_FILE).stream()
-                .map(line -> line.strip().split(" "))
+                .map(line -> line.trim().split(" "))
                 .map(line -> new Instruction(Operation.getOperation(line[0]), Integer.parseInt(line[1])))
                 .collect(Collectors.toList());
 
