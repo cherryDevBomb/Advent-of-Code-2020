@@ -13,10 +13,10 @@ public class AdapterArray {
     private static final String INPUT_FILE = "input_10.txt";
 
     public static void main(String[] args) {
-        new AdapterArray().processCustomsDeclarationsForms();
+        new AdapterArray().processAdapters();
     }
 
-    private void processCustomsDeclarationsForms() {
+    private void processAdapters() {
         List<Integer> adapters = InputReader.readInputFile(INPUT_FILE).stream()
                 .map(Integer::parseInt)
                 .sorted()
