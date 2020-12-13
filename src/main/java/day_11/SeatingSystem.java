@@ -46,8 +46,6 @@ public class SeatingSystem {
      */
     private List<List<Character>> getStaticSeatLayout(List<List<Character>> seatLayout, VisibilityMethod visibilityMethod, int maxTolerated) {
         List<List<Character>> newSeatLayout = performOneRound(seatLayout, visibilityMethod, maxTolerated);
-        printSeatLayout(newSeatLayout);
-        System.out.println();
         if (!seatLayoutEquals(seatLayout, newSeatLayout)) {
             return getStaticSeatLayout(newSeatLayout, visibilityMethod, maxTolerated);
         }
@@ -102,14 +100,11 @@ public class SeatingSystem {
                 Pair.of(row + 1, col + 1)
         );
 
-        return adjacentSeats.stream()
-                .filter(seat -> seat.getLeft() >= 0 && seat.getRight() >= 0 && seat.getLeft() < seatLayout.size() && seat.getRight() < seatLayout.get(0).size())
-                .filter(seat -> OCCUPIED.equals(seatLayout.get(seat.getLeft()).get(seat.getRight())))
-                .count();
+        return getNumberOfOccupiedSeatsFromSet(seatLayout, adjacentSeats);
     }
 
     /**
-     * Calculate the number of occupied seats first sean from a given seat in each of those eight directions(up, down, left, right or diagonal)
+     * Calculate the number of occupied seats first seen from a given seat in each of those eight directions(up, down, left, right or diagonal)
      *
      * @param seatLayout matrix that describes the current state of the seats
      * @param row        row of current seat in the matrix
@@ -166,7 +161,7 @@ public class SeatingSystem {
         }
 
         List<Pair<Integer, Integer>> adjacentSeats = Arrays.asList(
-                Pair.of(upperLeftDiagonalRow, upperRightDiagonalCol),
+                Pair.of(upperLeftDiagonalRow, upperLeftDiagonalCol),
                 Pair.of(upRow, col),
                 Pair.of(upperRightDiagonalRow, upperRightDiagonalCol),
                 Pair.of(row, leftCol),
@@ -176,18 +171,35 @@ public class SeatingSystem {
                 Pair.of(lowerRightDiagonalRow, lowerRightDiagonalCol)
         );
 
-        return adjacentSeats.stream()
+        return getNumberOfOccupiedSeatsFromSet(seatLayout, adjacentSeats);
+    }
+
+    /**
+     * Calculate how many from the given seats are occupied in the given seat layout
+     *
+     * @param seatLayout matrix that describes the current state of the seats
+     * @param seats      coordinates of the analyzed seats described as pairs of row, column
+     * @return number of occupied seats from the given list of seats
+     */
+    private long getNumberOfOccupiedSeatsFromSet(List<List<Character>> seatLayout, List<Pair<Integer, Integer>> seats) {
+        return seats.stream()
                 .filter(seat -> seat.getLeft() >= 0 && seat.getRight() >= 0 && seat.getLeft() < seatLayout.size() && seat.getRight() < seatLayout.get(0).size())
                 .filter(seat -> OCCUPIED.equals(seatLayout.get(seat.getLeft()).get(seat.getRight())))
                 .count();
     }
 
+    /**
+     * Calculate the total number of occupied seats in a given seat layout
+     *
+     * @param seatLayout matrix that describes the current state of the seats
+     * @return total number of occupied seats
+     */
     private long getNumberOfOccupiedSeats(List<List<Character>> seatLayout) {
         return seatLayout.stream()
                 .mapToLong(row -> row.stream().filter(OCCUPIED::equals).count())
                 .sum();
     }
-
+    
     private boolean seatLayoutEquals(List<List<Character>> seatLayout1, List<List<Character>> seatLayout2) {
         return IntStream.range(0, seatLayout1.size())
                 .allMatch(row -> IntStream.range(0, seatLayout1.get(row).size())
