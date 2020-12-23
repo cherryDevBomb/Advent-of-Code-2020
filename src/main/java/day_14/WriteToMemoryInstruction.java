@@ -2,15 +2,15 @@ package day_14;
 
 public class WriteToMemoryInstruction extends Instruction {
 
-    private int address;
+    private long address;
     private long value;
 
-    public WriteToMemoryInstruction(int address, long value) {
+    public WriteToMemoryInstruction(long address, long value) {
         this.address = address;
         this.value = value;
     }
 
-    public int getAddress() {
+    public long getAddress() {
         return address;
     }
 
