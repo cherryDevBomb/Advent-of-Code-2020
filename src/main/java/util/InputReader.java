@@ -29,4 +29,10 @@ public class InputReader {
                 .stream()
                 .collect(CustomCollectors.collectChunks(StringUtils::isBlank, unifier));
     }
+
+    public static List<List<String>> readInputFileLineGroups(String filepath) {
+        return readInputFile(filepath)
+                .stream()
+                .collect(CustomCollectors.collectLineGroups(StringUtils::isBlank));
+    }
 }

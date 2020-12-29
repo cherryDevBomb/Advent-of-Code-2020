@@ -10,6 +10,7 @@ repositories {
 dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
 }
 
 gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS
