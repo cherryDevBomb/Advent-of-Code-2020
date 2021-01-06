@@ -25,4 +25,8 @@ public class TicketField {
     public IntRange getSecondRange() {
         return secondRange;
     }
+
+    public boolean isValidValue(int val) {
+        return firstRange.containsInteger(val) || secondRange.containsInteger(val);
+    }
 }

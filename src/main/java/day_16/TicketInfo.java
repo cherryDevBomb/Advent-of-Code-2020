@@ -25,4 +25,8 @@ public class TicketInfo {
     public List<List<Integer>> getNearbyTickets() {
         return nearbyTickets;
     }
+
+    public void setNearbyTickets(List<List<Integer>> nearbyTickets) {
+        this.nearbyTickets = nearbyTickets;
+    }
 }
