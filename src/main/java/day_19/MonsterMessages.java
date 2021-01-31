@@ -39,21 +39,67 @@ public class MonsterMessages {
         Map<String, Rule> rules = deriveRules(initialRules);
         long matchRuleZero = countMatchingZero(rules.get("0"), messages);
 
-        initialRules.put("8", new Rule(Arrays.asList(Arrays.asList("42"), Arrays.asList("42", "8"))));
-        initialRules.put("11", new Rule(Arrays.asList(Arrays.asList("42", "31"), Arrays.asList("42", "11", "31"))));
-        Map<String, Rule> rulesUpdated = deriveRules(initialRules);
-        long matchRuleZeroUpdated = countMatchingZero(rulesUpdated.get("0"), messages);
+        long matchRuleZeroUpdated = countMatchingZeroRecursion(messages, rules);
 
         System.out.println("Number of messages that completely match rule 0: " + matchRuleZero);
         System.out.println("Number of messages that completely match rule 0: " + matchRuleZeroUpdated);
     }
 
+    /**
+     * Count the messages that match the given rule, assuming the rules contain no recursion.
+     *
+     * @param rule     rule to match
+     * @param messages list of strings to match
+     * @return number of matching strings in messages
+     */
     private long countMatchingZero(Rule rule, List<String> messages) {
         return messages.stream()
                 .filter(message -> rule.getLexeme().contains(message))
                 .count();
     }
 
+    /**
+     * Solution for rule "0: 8 11" after updating the following 2 rules:
+     * 8: 42 | 42 8
+     * 11: 42 31 | 42 11 31
+     * This eventually resolves to at least one 42 followed by an equal number of 42s and 31s.
+     *
+     * @param messages list of strings to match
+     * @param allRules list of all derived rules
+     * @return number of matching strings in messages
+     */
+    private long countMatchingZeroRecursion(List<String> messages, Map<String, Rule> allRules) {
+        return messages.parallelStream()
+                .filter(message -> {
+                    int index = 0;
+                    int occurrences42 = 0;
+                    int occurrences31 = 0;
+                    boolean barrierCrossed = false;
+                    while (index < message.length()) {
+                        String part = message.substring(index, index + 8);
+                        index += 8;
+                        if (!barrierCrossed && allRules.get("42").getLexeme().contains(part)) {
+                            occurrences42++;
+                        } else if (!barrierCrossed && allRules.get("31").getLexeme().contains(part)) {
+                            occurrences31++;
+                            barrierCrossed = true;
+                        } else if (barrierCrossed && allRules.get("31").getLexeme().contains(part)) {
+                            occurrences31++;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return occurrences31 >= 1 && occurrences42 > occurrences31;
+                })
+                .count();
+    }
+
+    /**
+     * Starting with the initial set of rules, derive them until the rule resolves to simple lexemes or until recursion occurs.
+     *
+     * @param rules initial set of rules
+     * @return derived set of rules
+     */
     private Map<String, Rule> deriveRules(Map<String, Rule> rules) {
         AtomicBoolean hasDerived = new AtomicBoolean(true);
         while (hasDerived.get()) {
@@ -90,18 +136,30 @@ public class MonsterMessages {
 
                     // all derivations complete -> convert rule to final
                     if (derivedRule.stream().allMatch(subRule -> subRule.stream().allMatch(StringUtils::isAlpha))) {
-                        List<String> lexemes = derivedRule.stream()
-                                .map(subRule -> String.join("", subRule))
-                                .collect(Collectors.toList());
-                        value.setLexeme(lexemes);
+                        value.setLexeme(deriveLexemes(derivedRule));
                         value.setFinal(true);
                     } else {
                         value.setComposedRules(derivedRule);
+                        if (derivedRule.stream().allMatch(subRule -> subRule.stream().allMatch(lexeme -> StringUtils.isAlpha(lexeme) || key.equals(lexeme)))) {
+                            value.setFinal(true);
+                        }
                     }
                 }
             });
         }
 
         return rules;
+    }
+
+    /**
+     * Use a list of composed rule list to derive its list of lexemes.
+     *
+     * @param composedRules
+     * @return list of lexemes for given rule
+     */
+    private List<String> deriveLexemes(List<List<String>> composedRules) {
+        return composedRules.stream()
+                .map(subRule -> String.join("", subRule))
+                .collect(Collectors.toList());
     }
 }

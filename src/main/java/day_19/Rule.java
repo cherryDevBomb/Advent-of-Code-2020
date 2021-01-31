@@ -1,5 +1,6 @@
 package day_19;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class Rule {
 
     public Rule(List<List<String>> composedRules) {
         this.composedRules = composedRules;
+        this.lexeme = new ArrayList<>();
         this.isFinal = false;
     }
 
